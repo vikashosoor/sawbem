@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoTH Superset vs. Factors Impact Map — Coverage Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F8F1DF; --paper-2:#F1E7CD; --ink:#221C14; --ink-soft:#5C5346; --line:#E2D6B4;
+    --indigo:#22344E; --indigo-deep:#141F30; --turmeric:#D89A1D; --madder:#A63A2A;
+    --c-soil:#8B5A2B; --c-soil-tint:#F1E3CD;
+    --c-air:#3E7CA6; --c-air-tint:#DEEBF3;
+    --c-water:#1F7A72; --c-water-tint:#DAEEEA;
+    --c-bio:#4C7A32; --c-bio-tint:#E4EFD8;
+    --c-energy:#C9860F; --c-energy-tint:#F8E7C0;
+    --c-materials:#8C5439; --c-materials-tint:#EEE1D5;
+    --covered:#4C7A32; --covered-tint:#E4EFD8;
+    --partial:#C9860F; --partial-tint:#F8E7C0;
+    --new:#A63A2A; --new-tint:#F3DCD3;
+    --outscope:#5C5346; --outscope-tint:#E9E4D6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;
+    background-image:radial-gradient(var(--line) 1px, transparent 1px); background-size:22px 22px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 0 80px;}
+
+  header.hero{background:var(--indigo);background-image:radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:16px 16px;color:var(--paper);padding:64px 40px 44px;border-bottom:6px solid var(--turmeric);}
+  .hero-inner{max-width:1020px;margin:0 auto;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--turmeric);margin:0 0 16px;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,4.2vw,48px);line-height:1.08;margin:0 0 20px;color:var(--paper);max-width:22ch;}
+  .lede{font-size:17px;color:#C9D2DE;max-width:68ch;margin:0 0 28px;}
+
+  .stat-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:14px 20px;min-width:130px;}
+  .stat .num{font-family:'Fraunces',serif;font-weight:600;font-size:28px;color:var(--turmeric);line-height:1;}
+  .stat .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:0.04em;color:#C9D2DE;margin-top:6px;}
+
+  .content{padding:44px 40px 0;}
+  .content-inner{max-width:1020px;margin:0 auto;}
+  .section-intro{max-width:70ch;color:var(--ink-soft);margin:0 0 24px;font-size:15px;}
+  h2.section-title{font-family:'Fraunces',serif;font-weight:600;font-size:24px;color:var(--indigo);margin:48px 0 6px;}
+  h2.section-title:first-of-type{margin-top:0;}
+  .section-sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 20px;max-width:70ch;}
+
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:26px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);}
+  .legend .item{display:flex;align-items:center;gap:7px;}
+  .swatch-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+
+  /* status table */
+  .status-table{border:1px solid var(--line);background:var(--paper-2);border-radius:10px;overflow:hidden;margin-bottom:36px;}
+  .st-row{display:grid;grid-template-columns:130px 1.4fr 1.6fr;border-top:1px solid var(--line);}
+  .st-row:first-child{border-top:none;}
+  .st-row.head{background:var(--indigo);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;}
+  .st-row > div{padding:12px 16px;font-size:13.5px;}
+  .status-pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;padding:3px 10px;border-radius:999px;white-space:nowrap;}
+  .pill-covered{background:var(--covered-tint);color:var(--covered);}
+  .pill-partial{background:var(--partial-tint);color:var(--partial);}
+  .pill-new{background:var(--new-tint);color:var(--new);}
+  .pill-outscope{background:var(--outscope-tint);color:var(--outscope);}
+  .soth-src{font-size:12px;color:var(--ink-soft);}
+  .our-item{font-size:13px;}
+
+  /* theme cards for out-of-scope summary */
+  .scope-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:36px;}
+  .scope-card{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:18px 20px;}
+  .scope-card h4{font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;margin:0 0 6px;color:var(--ink);}
+  .scope-card p{font-size:12.5px;color:var(--ink-soft);margin:0;}
+
+  .pillar-block{margin-bottom:30px;}
+  .pillar-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .pillar-head .dot{width:14px;height:14px;border-radius:50%;}
+  .pillar-head h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0;color:var(--ink);}
+  .pillar-head .count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+
+  .note-box{background:var(--new-tint);border-left:4px solid var(--madder);border-radius:6px;padding:16px 20px;margin:24px 0 36px;font-size:13.5px;color:var(--ink);}
+  .note-box b{color:var(--madder);}
+
+  footer.page{margin:56px 40px 0;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;max-width:1020px;}
+
+  @media (max-width:720px){
+    header.hero{padding:48px 24px 34px;} .content{padding:36px 24px 0;}
+    .st-row{grid-template-columns:100px 1fr;}
+    .st-row > div:nth-child(3){grid-column:1/-1;border-top:1px dashed var(--line);}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Coverage report · SoTH parameter superset</p>
+    <h1>How the factors impact map compares to the SoTH superset</h1>
+    <p class="lede">The SoTH file collates ecological, social, and economic parameters tracked across ten partner organisations. This report checks the existing six-pillar factors impact map against it — what's already covered, what's partially covered, what genuinely needed adding, and what was deliberately left out of an ecological framework.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="num">48</div><div class="lbl">SoTH Ecology sub-parameters reviewed</div></div>
+      <div class="stat"><div class="num">~29</div><div class="lbl">Directly or closely covered</div></div>
+      <div class="stat"><div class="num">13</div><div class="lbl">New first-order factors added</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">New systemic drivers added</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">New ratio indices built into the workbook</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="content"><div class="content-inner">
+
+  <h2 class="section-title">What the SoTH file actually contains</h2>
+  <p class="section-intro">The superset spans three themes — <b>Ecology</b> (Air, Agro-ecology, Energy, Biodiversity/Forest, Soil, Water, Waste), <b>Social</b> (Gender & Inclusion, Health & Nutrition, Institutions, WASH, Migration, Education...), and <b>Economy</b> (Export-Import, Livelihood, Youth Employment...). It also has a cross-cutting <b>Commons</b> theme covering things like housing architecture, land fragmentation, night-sky visibility, and thermal microclimate that doesn't map cleanly onto any single pillar. This report focuses the comparison on what's ecologically relevant to the six-pillar model; Social and Economy items are noted only where they intersect the environment (e.g. WASH, migration, credit).</p>
+
+  <h2 class="section-title">Coverage by status</h2>
+  <p class="section-sub">Every SoTH Ecology sub-parameter, checked against the existing factors impact map.</p>
+  <div class="legend">
+    <span class="item"><span class="swatch-dot" style="background:var(--covered)"></span>Covered — already an equivalent factor</span>
+    <span class="item"><span class="swatch-dot" style="background:var(--partial)"></span>Partially covered — related but less specific</span>
+    <span class="item"><span class="swatch-dot" style="background:var(--new)"></span>Newly added — genuine gap, now in the framework</span>
+    <span class="item"><span class="swatch-dot" style="background:var(--outscope)"></span>Out of scope — governance/social, not a physical factor</span>
+  </div>
+
+  <div id="status-table" class="status-table"></div>
+
+  <div class="note-box">
+    <b>Notable validation:</b> SoTH's Agroecology section independently defines a "Cropping Multiplicity Index (Scoring Question)" — the same problem the Crop Diversification Index was built to solve. SoTH's version is a subjective scoring question; the existing Shannon-Weiner formula in the workbook is a computed index, so no change was needed there, but the overlap confirms the approach was the right one.
+  </div>
+
+  <h2 class="section-title">New factors added, by pillar</h2>
+  <p class="section-sub">These are now in the factors impact map's first-order list and, where they involve a clean ratio, built into the workbook as live formulas rather than placeholder scores.</p>
+  <div id="pillar-additions"></div>
+
+  <h2 class="section-title">New systemic (second-order) drivers</h2>
+  <p class="section-sub">Two additions to the eleven-driver systemic matrix.</p>
+  <div id="driver-additions"></div>
+
+  <h2 class="section-title">What was deliberately left out, and why</h2>
+  <p class="section-sub">Roughly two-thirds of the SoTH superset (Social and Economy themes, plus most of Commons) sits outside a six-pillar ecological framework by design. These weren't missed — they were excluded on purpose.</p>
+  <div class="scope-grid" id="scope-grid"></div>
+
+</div></div>
+<footer class="page">Coverage report generated from SOTH_parameters-_Superset.xlsx · paired with factors_impact_map.html and eco_health_scorecard.xlsx</footer>
+</div>
+
+<script>
+const statusRows = [
+  ["Air", "Household emissions, agricultural burning, waste combustion, industrial air quality", "covered", "Matches existing Air factors (household biomass, stubble burning, open burning, brick kilns) closely."],
+  ["Air", "Roadside green belts / particulate barriers", "new", "Added: 'Absence of roadside green belts / dust barriers'."],
+  ["Air", "Respiratory health incidence, ambient smell/haze baseline", "outscope", "Health outcome and sensory-perception data — better captured via facilitation methods than a physical factor."],
+  ["Agro-ecology", "Organic vs chemical cultivation area", "new", "Added: Organic Cultivation Ratio — now a live formula in the workbook."],
+  ["Agro-ecology", "Pesticide/herbicide usage volume", "partial", "Already covered generically as 'chemical fertilizer and pesticide overuse'; SoTH tracks it as a volume metric rather than a flag."],
+  ["Agro-ecology", "Seed sourcing ratio (village-saved vs outside-commercial)", "new", "Added: Seed Sourcing / Sovereignty Ratio — now a live formula in the workbook."],
+  ["Agro-ecology", "Livestock Desi vs hybrid variety ratio", "outscope", "Genetic-diversity metric distinct from grazing pressure; left for a future livestock-specific module rather than forced into the current ratio set."],
+  ["Agro-ecology", "Cropping Multiplicity Index (scoring question)", "covered", "Equivalent to the existing Crop Diversification Index (Shannon-Weiner) — SoTH's version is a subjective score; the workbook's is computed."],
+  ["Agro-ecology", "Mulching material ratio (natural fibre : plastic sheets)", "new", "Added: 'Shift from natural-fibre to plastic mulching sheets' — directly reinforces the earlier microplastics discussion."],
+  ["Energy", "Petrol / diesel consumption, cooking gas, electricity, solar", "covered", "Matches existing Energy factors (fuel type, cooking fuel choice, grid mix)."],
+  ["Energy", "Renewable energy: household vs community-level split", "partial", "Existing Renewable Adoption Ratio covers the aggregate; the household/commons split is a refinement not yet built in."],
+  ["Biodiversity / Forest", "Forest Rights & Management (CFR claims)", "outscope", "Governance/tenure status rather than an ecological condition factor — fits the Community Voice institutional-mapping method instead."],
+  ["Biodiversity / Forest", "Species richness, landscape connectivity, invasive species, human-wildlife conflict", "covered", "Matches existing Biodiversity factors closely."],
+  ["Biodiversity / Forest", "Aquatic ecosystem health (pond macro-fauna)", "new", "Added: 'Aquatic ecosystem decline — pond macro-fauna loss'."],
+  ["Biodiversity / Forest", "Cultural ecology (sacred groves)", "new", "Added: 'Loss of sacred groves and protected cultural-ecology sites'."],
+  ["Biodiversity / Forest", "NTFP economic value", "new", "Added: 'Decline in non-timber forest produce (NTFP) availability'."],
+  ["Biodiversity / Forest", "Forest commons equity (access for vulnerable groups)", "outscope", "Equity/governance question — suited to Focus Group Discussions and institutional mapping, not a physical indicator."],
+  ["Soil", "Composting prevalence, SOC, chemical/biological profile", "covered", "Matches existing Soil factors (SOC already an indicator; TBI covers biological activity)."],
+  ["Soil", "Moisture retention / water-holding capacity", "new", "Added as a distinct factor from bulk density."],
+  ["Soil", "Erosion control infrastructure (bunding, trenching, mulching)", "new", "Added: infrastructure presence, distinct from the existing 'slope and erosion exposure' natural factor."],
+  ["Soil", "Soil reclamation cost (economic angle)", "outscope", "Cost/expenditure metric — an economic consequence, not a physical driver; better suited to programme cost-tracking than the factors map."],
+  ["Water", "Irrigation access, groundwater over-extraction", "covered", "Matches existing Water factors closely."],
+  ["Water", "Rainwater harvesting infrastructure functionality", "new", "Added: 'Non-functional or silted rainwater harvesting structures'."],
+  ["Water", "Ecological water sharing (dry-season water for wildlife)", "new", "Added: 'Loss of dry-season water availability for wildlife and livestock'."],
+  ["Water", "WASH — drinking water & sanitation access", "partial", "Adjacent to Water Quality but framed around human access/health rather than the water body's condition; not merged wholesale."],
+  ["Water", "Greywater management (soak pits)", "new", "Added: 'Untreated greywater discharge — no soak pits'."],
+  ["Water", "Distribution equity (canal tail-end reach)", "outscope", "Infrastructure-equity question, suited to Community Voice / institutional mapping rather than a physical condition factor."],
+  ["Water", "Water governance, traditional management systems", "outscope", "Governance layer — matches the existing 'Water Governance' facilitation method (institutional/Venn diagram), not a physical factor."],
+  ["Water", "Festival/ritual pollution footprint", "covered", "Already an existing factor: 'Ritual and festival waste disposal in rivers'."],
+  ["Water", "Water pumping energy cost", "partial", "Related to the existing 'subsidized power driving overconsumption' driver but not water-specific; not split out separately."],
+  ["Waste", "Collection infrastructure, staffing, monitoring, grievance redressal", "outscope", "This SoTH section is an institutional-capacity assessment (is a system in place to manage waste), a different lens from the factors map's causes-of-degradation framing. Complementary, not merged."],
+  ["Waste", "Community engagement, plastic-free initiatives", "outscope", "Programme/initiative tracking — fits an NGO's monitoring dashboard more than a degradation-factor list."],
+  ["Commons", "Mining & quarrying inventory", "partial", "Existing 'sand and stone mining' driver covers the mechanism; SoTH's version is a site-specific inventory count."],
+  ["Commons", "Vegetation cover duality (green % vs species loss)", "new", "Added under Biodiversity: 'Green monoculture plantations masking real species loss' — a genuinely useful reframe."],
+  ["Commons", "Utility-scale solar land conversion", "new", "Added as a new systemic driver: 'Utility-scale renewable energy land conversion'."],
+  ["Commons", "Land conversion (agri to non-agri), tenure fragmentation", "partial", "Related to 'urbanization sealing soil with concrete' but tracks a different mechanism (land-use change vs surface sealing)."],
+  ["Commons", "Thermal microclimate / heat stress, acoustic ecology, night-sky visibility", "outscope", "Largely qualitative, sensory, and community-experience data — good fits for the Photovoice and transect-walk facilitation methods, not a scored physical factor."],
+  ["Commons", "Housing architecture, digital connectivity, public transport, grid continuity", "outscope", "Development-infrastructure indicators outside an ecological-condition framework."],
+  ["Economy", "Export-Import (construction material logistics, agri input trade)", "covered", "Matches the existing 'Urban construction material demand' and 'Agricultural commodity chains' systemic drivers closely."],
+  ["Economy / Social", "Rural credit, moneylender dependency, distress migration, land idled by migration", "covered", "Matches the existing 'Rural credit and debt cycles' and 'Migration and labor economy shifts' systemic drivers — strong independent validation."],
+];
+
+const STATUS_LABEL = {covered:"Covered", partial:"Partial", new:"New", outscope:"Out of scope"};
+
+function buildStatusTable(){
+  const el = document.getElementById("status-table");
+  let html = `<div class="st-row head"><div>Status</div><div>SoTH parameter</div><div>Notes</div></div>`;
+  html += statusRows.map(([theme, param, status, note]) => `
+    <div class="st-row">
+      <div><span class="status-pill pill-${status}">${STATUS_LABEL[status]}</span></div>
+      <div class="our-item"><b>${theme}</b><br><span class="soth-src">${param}</span></div>
+      <div class="soth-src">${note}</div>
+    </div>`).join("");
+  el.innerHTML = html;
+}
+
+const additions = {
+  soil: { color:"var(--c-soil)", tint:"var(--c-soil-tint)", label:"Soil", items:[
+    "Loss of soil moisture retention / water-holding capacity",
+    "Shift from natural-fibre to plastic mulching sheets",
+    "Absence of erosion-control structures (bunding, trenching, mulching)",
+    "Low organic-to-chemical cultivation ratio — new workbook formula",
+    "High dependency on outside/commercial seed sourcing — new workbook formula"
+  ]},
+  air: { color:"var(--c-air)", tint:"var(--c-air-tint)", label:"Air", items:[
+    "Absence of roadside green belts / dust barriers"
+  ]},
+  water: { color:"var(--c-water)", tint:"var(--c-water-tint)", label:"Water", items:[
+    "Non-functional or silted rainwater harvesting structures",
+    "Loss of dry-season water availability for wildlife and livestock",
+    "Untreated greywater discharge — no soak pits"
+  ]},
+  bio: { color:"var(--c-bio)", tint:"var(--c-bio-tint)", label:"Biodiversity", items:[
+    "Aquatic ecosystem decline — pond macro-fauna loss (frogs, fish, birds)",
+    "Loss of sacred groves and protected cultural-ecology sites",
+    "Decline in non-timber forest produce (NTFP) availability",
+    "Green monoculture plantations masking real species loss"
+  ]}
+};
+
+function buildPillarAdditions(){
+  const el = document.getElementById("pillar-additions");
+  el.innerHTML = Object.values(additions).map(p => `
+    <div class="pillar-block">
+      <div class="pillar-head"><span class="dot" style="background:${p.color}"></span><h3>${p.label}</h3><span class="count">${p.items.length} new factor${p.items.length>1?'s':''}</span></div>
+      <div class="status-table"><div class="st-row" style="grid-template-columns:1fr;">
+        <div>${p.items.map(i => `&bull; ${i}`).join("<br>")}</div>
+      </div></div>
+    </div>`).join("");
+}
+
+const driverAdditions = [
+  { name:"Seed and agricultural input dependency", desc:"Commercial seed and input supply chains lock farmers into chemical-dependent cultivation, eroding both the organic-to-chemical ratio (Soil) and on-farm crop landrace diversity (Biodiversity)." },
+  { name:"Utility-scale renewable energy land conversion", desc:"Ground-mounted solar installations convert grazing commons and habitat even while directly improving the site's Renewable Adoption Ratio — a genuine trade-off between the Energy and Biodiversity pillars, not a one-directional gain." }
+];
+
+function buildDriverAdditions(){
+  const el = document.getElementById("driver-additions");
+  el.innerHTML = driverAdditions.map(d => `
+    <div class="scope-card" style="margin-bottom:14px;"><h4>${d.name}</h4><p>${d.desc}</p></div>
+  `).join("");
+}
+
+const outOfScope = [
+  { title:"Gender & Inclusion", desc:"Democratic inclusion, women's value-chain integration, land title equity, political agency — social equity, not ecological condition." },
+  { title:"Health & Nutrition", desc:"Anemia prevalence, dietary diversity, healthcare access — health outcomes, though SoTH itself notes a link back to Agro-ecology's seed diversity." },
+  { title:"Institutions", desc:"CBO vitality, PRI-CBO collaboration, meeting transparency — governance capacity, suited to the Community Voice institutional-mapping method." },
+  { title:"WASH (as a standalone theme)", desc:"Drinking water and sanitation access folded partially into Water Quality; the human-access framing kept separate from water-body condition." },
+  { title:"Education, Ideology, Empathy", desc:"Social and cultural dimensions with no direct physical measurement pathway." },
+  { title:"Waste — institutional capacity", desc:"Collection infrastructure, staffing, and monitoring systems assess whether a management system exists, not what's causing degradation — a complementary but distinct lens." },
+  { title:"Commons — development infrastructure", desc:"Housing architecture, digital connectivity, public transport, grid continuity — development indicators outside an ecological-condition frame." },
+  { title:"Commons — sensory & experiential", desc:"Thermal comfort, acoustic ecology, night-sky visibility, 'sense of calm' — genuinely valuable, but better captured through Photovoice and transect walks than a scored factor." },
+  { title:"Economy — livelihoods", desc:"HH income, youth employment, skills matching — economic outcomes rather than environmental drivers, though several already surface indirectly via the existing systemic drivers." }
+];
+
+function buildScopeGrid(){
+  const el = document.getElementById("scope-grid");
+  el.innerHTML = outOfScope.map(s => `<div class="scope-card"><h4>${s.title}</h4><p>${s.desc}</p></div>`).join("");
+}
+
+buildStatusTable();
+buildPillarAdditions();
+buildDriverAdditions();
+buildScopeGrid();
+</script>
+</body>
+</html>

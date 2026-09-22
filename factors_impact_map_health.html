@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What drives change in a place — factor, tool and voice map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F8F1DF;
+    --paper-2:#F1E7CD;
+    --ink:#221C14;
+    --ink-soft:#5C5346;
+    --line:#E2D6B4;
+
+    --indigo:#22344E;
+    --indigo-deep:#141F30;
+
+    --turmeric:#D89A1D;
+    --madder:#A63A2A;
+
+    --c-soil:#8B5A2B;      --c-soil-tint:#F1E3CD;
+    --c-air:#3E7CA6;       --c-air-tint:#DEEBF3;
+    --c-water:#1F7A72;     --c-water-tint:#DAEEEA;
+    --c-bio:#4C7A32;       --c-bio-tint:#E4EFD8;
+    --c-energy:#C9860F;    --c-energy-tint:#F8E7C0;
+    --c-materials:#8C5439; --c-materials-tint:#EEE1D5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    background-image:radial-gradient(var(--line) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 0 80px;}
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    background:var(--indigo);
+    background-image:radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:16px 16px;
+    color:var(--paper);
+    padding:64px 40px 44px;
+    border-bottom:6px solid var(--turmeric);
+  }
+  .hero-inner{max-width:1020px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--turmeric);
+    margin:0 0 16px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(32px,4.4vw,50px);
+    line-height:1.05;
+    margin:0 0 20px;
+    color:var(--paper);
+    max-width:19ch;
+  }
+  .lede{font-size:17px;color:#C9D2DE;max-width:66ch;margin:0 0 32px;}
+
+  .swatches{display:flex;flex-wrap:wrap;gap:10px;}
+  .swatch{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:999px;
+    padding:6px 14px 6px 8px;
+  }
+  .swatch .chip{width:16px;height:16px;border-radius:50%;}
+  .swatch span{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.03em;color:#DCE3EB;text-transform:uppercase;}
+
+  /* ---------- Body wrap ---------- */
+  .content{padding:44px 40px 0;}
+  .content-inner{max-width:1020px;margin:0 auto;}
+
+  nav.tabs{display:flex;gap:10px;margin-bottom:38px;flex-wrap:wrap;}
+  nav.tabs button{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.02em;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    padding:11px 20px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  nav.tabs button.active{
+    background:var(--turmeric);
+    border-color:var(--turmeric);
+    color:var(--indigo-deep);
+    font-weight:500;
+  }
+  nav.tabs button:hover:not(.active){border-color:var(--ink-soft);}
+
+  section.view{display:none;}
+  section.view.active{display:block;animation:rise .35s ease;}
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion: reduce){section.view.active{animation:none;}}
+
+  .section-intro{max-width:66ch;color:var(--ink-soft);margin:0 0 26px;font-size:15px;}
+
+  /* ---------- First order pillar cards ---------- */
+  .pillar-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+  }
+  .pillar-card{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-top:5px solid var(--pc);
+    border-radius:10px;
+    padding:26px 24px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .pillar-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px -14px rgba(34,28,20,0.35);}
+  .pillar-card .head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .pillar-card .badge{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--pt);color:var(--pc);flex-shrink:0;
+  }
+  .pillar-card .badge svg{width:20px;height:20px;}
+  .pillar-card h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:20px;
+    margin:0;
+    color:var(--ink);
+  }
+  .pillar-card ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-soft);}
+  .pillar-card li{margin-bottom:8px;}
+  .pillar-card li::marker{color:var(--pc);font-size:12px;}
+
+  /* ---------- Second order matrix ---------- */
+  .legend{display:flex;gap:22px;align-items:center;margin-bottom:22px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);flex-wrap:wrap;}
+  .legend .item{display:flex;align-items:center;gap:7px;}
+  .dot{display:inline-block;border-radius:50%;}
+  .dot.legend-primary{width:12px;height:12px;background:var(--indigo);}
+  .dot.legend-secondary{width:10px;height:10px;background:transparent;border:2px solid var(--indigo);}
+  .dot.legend-none{width:5px;height:5px;background:var(--line);}
+
+  .matrix{border:1px solid var(--line);background:var(--paper-2);border-radius:10px;overflow:hidden;}
+  .matrix-head, .driver-summary{
+    display:grid;
+    grid-template-columns:2.2fr repeat(6,1fr);
+    align-items:center;
+  }
+  .matrix-head{
+    background:var(--indigo);
+    color:var(--paper);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:14px 22px;
+  }
+  .matrix-head span{text-align:center;}
+  .matrix-head span:first-child{text-align:left;color:var(--turmeric);}
+
+  .driver{border-top:1px solid var(--line);}
+  .driver-summary{
+    padding:17px 22px;
+    cursor:pointer;
+    user-select:none;
+    transition:background .12s ease;
+  }
+  .driver-summary:hover{background:var(--paper);}
+  .driver-name{font-size:14.5px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:9px;}
+  .driver-name .caret{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--turmeric);
+    transition:transform .15s ease;
+    display:inline-block;
+  }
+  .driver.open .caret{transform:rotate(90deg);}
+  .driver-summary .dot-cell{display:flex;justify-content:center;}
+  .dot.primary{width:13px;height:13px;}
+  .dot.secondary{width:10px;height:10px;border:2px solid;background:transparent;}
+  .dot.none{width:5px;height:5px;background:var(--line);}
+  .dot.col-soil.primary{background:var(--c-soil);} .dot.col-soil.secondary{border-color:var(--c-soil);}
+  .dot.col-air.primary{background:var(--c-air);} .dot.col-air.secondary{border-color:var(--c-air);}
+  .dot.col-water.primary{background:var(--c-water);} .dot.col-water.secondary{border-color:var(--c-water);}
+  .dot.col-bio.primary{background:var(--c-bio);} .dot.col-bio.secondary{border-color:var(--c-bio);}
+  .dot.col-energy.primary{background:var(--c-energy);} .dot.col-energy.secondary{border-color:var(--c-energy);}
+  .dot.col-materials.primary{background:var(--c-materials);} .dot.col-materials.secondary{border-color:var(--c-materials);}
+
+  .driver-detail{display:none;padding:0 22px 22px 22px;font-size:13.5px;color:var(--ink-soft);}
+  .driver.open .driver-detail{display:block;}
+  .driver-detail ul{margin:0;padding-left:0;list-style:none;}
+  .driver-detail li{padding:10px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:120px 1fr;gap:14px;}
+  .driver-detail li:first-child{border-top:none;}
+  .driver-detail .pillar-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;font-weight:500;padding-top:1px;}
+  .tag-soil{color:var(--c-soil);} .tag-air{color:var(--c-air);} .tag-water{color:var(--c-water);}
+  .tag-bio{color:var(--c-bio);} .tag-energy{color:var(--c-energy);} .tag-materials{color:var(--c-materials);}
+
+  /* ---------- Tools tab ---------- */
+  .tool-item{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+  .tier{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:2px 8px;
+    border-radius:999px;
+    flex-shrink:0;
+    white-space:nowrap;
+  }
+  .tier-free{background:var(--c-bio-tint);color:var(--c-bio);}
+  .tier-diy{background:var(--paper);color:var(--ink-soft);border:1px solid var(--line);}
+  .tier-kit{background:var(--c-energy-tint);color:var(--c-energy);}
+  .tier-app{background:var(--c-air-tint);color:var(--c-air);}
+  .tool-text{font-size:13.5px;color:var(--ink-soft);}
+  .tool-text b{color:var(--ink);font-weight:600;}
+
+  /* ---------- Facilitation tab ---------- */
+  .facil-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:16px;
+  }
+  .facil-card{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+  }
+  .facil-card h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:18px;
+    margin:0 0 8px;
+    color:var(--indigo);
+  }
+  .facil-card p{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;}
+  .facil-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .facil-tags span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border-radius:999px;
+  }
+  .ftag-soil{background:var(--c-soil-tint);color:var(--c-soil);}
+  .ftag-air{background:var(--c-air-tint);color:var(--c-air);}
+  .ftag-water{background:var(--c-water-tint);color:var(--c-water);}
+  .ftag-bio{background:var(--c-bio-tint);color:var(--c-bio);}
+  .ftag-energy{background:var(--c-energy-tint);color:var(--c-energy);}
+  .ftag-materials{background:var(--c-materials-tint);color:var(--c-materials);}
+  .ftag-governance{background:#E3E7EE;color:var(--indigo);}
+  .ftag-priority{background:#F3E1DC;color:var(--madder);}
+
+  /* ---------- Healthy state reference ---------- */
+  .healthy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+  .healthy-card{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-top:5px solid var(--pc);
+    border-radius:10px;
+    padding:24px 24px 20px;
+  }
+  .healthy-card .head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .healthy-card .badge{
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--pt);color:var(--pc);flex-shrink:0;
+  }
+  .healthy-card .badge svg{width:19px;height:19px;}
+  .healthy-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0;color:var(--ink);}
+  .healthy-cat{margin-bottom:14px;}
+  .healthy-cat:last-child{margin-bottom:0;}
+  .healthy-cat-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--pc);
+    margin:0 0 8px;
+    font-weight:500;
+  }
+  .healthy-cat ul{margin:0;padding-left:0;list-style:none;}
+  .healthy-cat li{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    padding-left:22px;
+    position:relative;
+    margin-bottom:7px;
+    line-height:1.5;
+  }
+  .healthy-cat li::before{
+    content:"\2713";
+    position:absolute;
+    left:0;
+    top:0.5px;
+    color:var(--pc);
+    font-weight:600;
+    font-size:12px;
+  }
+  .healthy-note{
+    background:var(--paper-2);
+    border-left:4px solid var(--turmeric);
+    border-radius:6px;
+    padding:16px 20px;
+    margin:26px 0 4px;
+    font-size:13.5px;
+    color:var(--ink);
+  }
+  .healthy-note b{color:var(--madder);}
+
+  @media (max-width:720px){
+    header.hero{padding:48px 24px 34px;}
+    .content{padding:36px 24px 0;}
+    .matrix-head, .driver-summary{grid-template-columns:1.6fr repeat(6,1fr);font-size:10px;}
+    .driver-name{font-size:13px;}
+    .pillar-card{padding:20px 18px;}
+  }
+  @media (max-width:560px){
+    .matrix-head span:not(:first-child){display:none;}
+    .driver-summary .dot-cell{display:none;}
+    .driver-summary{grid-template-columns:1fr auto;}
+  }
+
+  footer.page{
+    margin:56px 40px 0;
+    padding-top:24px;border-top:1px solid var(--line);
+    font-size:12px;color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace;
+    max-width:1020px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Ecological health field reference · India</p>
+    <h1>What drives change in a place</h1>
+    <p class="lede">What "healthy" looks like for each pillar, the direct and systemic human factors behind degradation, the tools a village collective can actually use to measure them — including ratio-based indices that replace binary checkboxes with real gradients — and facilitation methods for capturing what the community itself observes and values.</p>
+    <div class="swatches" id="swatches"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="content"><div class="content-inner">
+
+    <nav class="tabs">
+      <button class="active" data-target="healthy">Healthy state reference</button>
+      <button data-target="first">First-order · site-level</button>
+      <button data-target="second">Second-order · systemic</button>
+      <button data-target="tools">Measurement tools</button>
+      <button data-target="voice">Community voice</button>
+    </nav>
+
+    <section class="view active" id="healthy">
+      <p class="section-intro">What "healthy" actually means, pillar by pillar — the inverse of the factors list. Each threshold below is already built into the scorecard workbook or drawn from the SoTH-validated criteria.</p>
+      <div class="healthy-grid" id="healthy-grid"></div>
+      <div class="healthy-note"><b>Note:</b> no single pillar is healthy on one number alone. Each needs at least one physical/chemical reading, one biological or functional reading, and — increasingly — one management-pattern reading (the ratio indices) that shows whether current practice is trending toward or away from health, not just where it sits today.</div>
+    </section>
+
+    <section class="view" id="first">
+      <div class="pillar-grid" id="pillar-grid"></div>
+    </section>
+
+    <section class="view" id="second">
+      <p class="section-intro">Eleven systemic drivers, most rooted in supply chains and economic structures well outside a single site's boundary — the last two sourced from the SoTH parameter superset. Each row shows which pillars it touches and how strongly. Click a row to see the mechanism behind each mark.</p>
+      <div class="legend">
+        <span class="item"><span class="dot legend-primary"></span>Primary impact</span>
+        <span class="item"><span class="dot legend-secondary"></span>Secondary impact</span>
+        <span class="item"><span class="dot legend-none"></span>No direct link</span>
+      </div>
+      <div class="matrix">
+        <div class="matrix-head">
+          <span>Systemic driver</span>
+          <span>Soil</span><span>Air</span><span>Water</span><span>Bio&shy;diversity</span><span>Energy</span><span>Materials</span>
+        </div>
+        <div id="matrix-body"></div>
+      </div>
+    </section>
+
+    <section class="view" id="tools">
+      <p class="section-intro">What a village collective can realistically use, tiered by cost and training needed. Free and DIY options need no equipment budget; kits need a one-time purchase; apps need a smartphone and some data connectivity. Three entries below — Crop Diversification, Grazing Pressure, and Renewable Adoption — replace a binary checkbox with a ratio or index, so a real trajectory shows up as a gradient rather than an identical flag at every stage.</p>
+      <div class="legend">
+        <span class="item"><span class="tier tier-free">Free</span> Government scheme or free protocol</span>
+        <span class="item"><span class="tier tier-diy">DIY</span> No-cost method, own materials</span>
+        <span class="item"><span class="tier tier-kit">Kit</span> One-time low-cost purchase</span>
+        <span class="item"><span class="tier tier-app">App</span> Smartphone platform</span>
+      </div>
+      <div class="pillar-grid" id="tools-grid"></div>
+    </section>
+
+    <section class="view" id="voice">
+      <p class="section-intro">Numbers from a scorecard tell you what changed. These methods, drawn from Participatory Rural Appraisal (PRA) practice, tell you what it means to the people living with it — and often surface causes the six-pillar framework misses entirely. Tags show which pillars or themes each method tends to surface.</p>
+      <div class="facil-grid" id="facil-grid"></div>
+    </section>
+
+  </div></div>
+  <footer class="page">Prepared as a field reference · pair with the site scorecard workbook for scoring</footer>
+</div>
+
+<script>
+const PILLAR_META = {
+  soil:{ label:"Soil", color:"var(--c-soil)", tint:"var(--c-soil-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>' },
+  air:{ label:"Air", color:"var(--c-air)", tint:"var(--c-air-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h9"/></svg>' },
+  water:{ label:"Water", color:"var(--c-water)", tint:"var(--c-water-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 0 1-14 0c0-3.5 3-7 7-12z"/></svg>' },
+  bio:{ label:"Biodiversity", color:"var(--c-bio)", tint:"var(--c-bio-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c0-8 4-13 9-15-1 8-4 13-9 15z"/><path d="M12 21c0-6-3-10-9-12 1 6 4 10 9 12z"/></svg>' },
+  energy:{ label:"Energy", color:"var(--c-energy)", tint:"var(--c-energy-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>' },
+  materials:{ label:"Materials", color:"var(--c-materials)", tint:"var(--c-materials-tint)",
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 3 7.5 12 12l9-4.5z"/><path d="M3 7.5V17L12 21m0-9v9m9-12.5V17L12 21"/></svg>' }
+};
+const PILLARS = ["soil","air","water","bio","energy","materials"];
+
+const healthyState = {
+  soil: [
+    { label:"Physical", items:[
+      "Bulk density < 1.30 g/cm³ — not compacted",
+      "High moisture retention / water-holding capacity — sponge-like structure, not cracking or hardening",
+      "Erosion-control structures present and functional (bunding, trenching, mulching) on sloped land"
+    ]},
+    { label:"Chemical", items:[
+      "Soil Organic Carbon (SOC) > 0.75%",
+      "pH between 6.5–7.5 (neutral)",
+      "Balanced N-P-K and micronutrient profile — no zinc, boron, iron, manganese or copper deficiencies"
+    ]},
+    { label:"Biological", items:[
+      "High microbial activity — strong tea-bag decomposition rate over 90 days",
+      "Active earthworm and mycorrhizal presence (qualitative field observation)"
+    ]},
+    { label:"Management pattern", items:[
+      "Organic-to-chemical cultivation ratio > 50%",
+      "Crop Diversification Index (Shannon H') > 1.6 — genuine multi-crop distribution, not a 90/10 split",
+      "Seed sovereignty > 50% village-saved / local seed",
+      "Grazing pressure ratio ≤ 1.0 — stocking density within carrying capacity",
+      "Mulching material is natural fibre, not plastic sheeting"
+    ]}
+  ],
+  air: [
+    { label:"Thresholds", items:[
+      "PM2.5 < 40 µg/m³ (CPCB annual standard)",
+      "PM10 < 60 µg/m³",
+      "NO2 < 40 µg/m³"
+    ]},
+    { label:"Field indicators", items:[
+      "Lichen bio-indicator cover > 40% of tree trunk surface",
+      "Roadside green belts / dust barriers present along dusty roads",
+      "No persistent haze or regular visible smoke",
+      "Absence of open burning, brick kilns, or uncontrolled stubble burning at the site boundary"
+    ]}
+  ],
+  water: [
+    { label:"Quality thresholds", items:[
+      "TDS between 100–500 mg/L",
+      "Dissolved Oxygen (DO) > 5.0 mg/L",
+      "Phosphate < 0.1 mg/L — prevents algal bloom",
+      "Macroinvertebrate Biotic Index > 7.0 — pollution-sensitive species present, not just tolerant ones"
+    ]},
+    { label:"Infrastructure & availability", items:[
+      "Groundwater / open well levels stable or rising, not falling year over year",
+      "Rainwater harvesting and recharge structures > 80% functional, not silted or abandoned",
+      "Adequate dry-season water availability for wildlife, cattle and birds — not just human use",
+      "Greywater / soak pit coverage > 75% of households — no open discharge",
+      "Distribution equity — tail-end users get comparable access to head-end users"
+    ]}
+  ],
+  bio: [
+    { label:"Diversity thresholds", items:[
+      "Shannon-Weiner Diversity Index (H') > 2.5",
+      "Native floral richness matches or exceeds the regional historical baseline",
+      "Avian functional diversity is balanced — healthy insectivore/frugivore ratio, not just total count",
+      "Canopy / ground cover density > 33%, and species-matched — not a green-looking monoculture"
+    ]},
+    { label:"Ecosystem indicators", items:[
+      "Pollinator and local bird activity visibly present — bees, butterflies, fireflies",
+      "Aquatic ecosystems show macro-fauna presence (frogs, fish, birds) with zero mass die-off events",
+      "Sacred groves and other protected cultural-ecology sites intact and actively respected",
+      "Non-timber forest produce (NTFP) availability stable or increasing",
+      "Wildlife corridors remain continuous — no hard fragmentation by roads or fencing",
+      "Low, non-escalating human-wildlife conflict"
+    ]}
+  ],
+  energy: [
+    { label:"Thresholds", items:[
+      "Renewable Adoption Ratio > 50% of households or capacity",
+      "Biomass thermal efficiency < 1.5 kg fuel/hr per household",
+      "Per capita grid intensity within or below regional norms",
+      "Passive solar / shade fraction > 40% of structures",
+      "Grid power supply reasonably continuous — few, short outages"
+    ]}
+  ],
+  materials: [
+    { label:"Thresholds", items:[
+      "Per capita waste generation < 0.4 kg/day",
+      "Organic source segregation purity > 90%",
+      "Landfill diversion rate > 75% — composted or recycled, not landfilled",
+      "Single-use plastic footprint approaching zero",
+      "Waste collection and processing infrastructure functional, with an active monitoring/grievance system"
+    ]}
+  ]
+};
+
+const firstOrder = [
+  { key:"soil", title:"Soil health", items:["Tillage and mechanized farming","Chemical fertilizer and pesticide overuse","Monocropping vs crop rotation","Livestock overgrazing","Nearby construction or mining","Irrigation-driven salinization","Stubble burning","Microplastic contamination from mulch film and compost","Topsoil excavation for brick kilns","Sand and stone mining","Urbanization sealing soil with concrete","Groundwater depletion causing land subsidence","Unlined landfill leachate","Encroachment on grazing and common land","Loss of soil moisture retention / water-holding capacity (SoTH)","Shift from natural-fibre to plastic mulching sheets (SoTH)","Absence of erosion-control structures — bunding, trenching, mulching (SoTH)","Low organic-to-chemical cultivation ratio (SoTH)","High dependency on outside/commercial seed sourcing — loss of seed sovereignty (SoTH)"] },
+  { key:"air", title:"Air quality", items:["Vehicular emissions and congestion","Industrial stack emissions","Construction dust","Crop residue and waste burning","Household biomass cooking fuel","Brick kilns and small industry","Diesel generators","Forest and grassland fires, mostly human-induced in India","Open municipal waste burning","Firecracker use during festivals","Stone crushing and quarry dust","Poor fuel quality and old vehicle fleets","Absence of roadside green belts / dust barriers (SoTH)"] },
+  { key:"water", title:"Water quality", items:["Untreated sewage discharge","Industrial effluent discharge","Agricultural runoff (fertilizer, pesticide)","Groundwater over-extraction via borewells","Solid waste dumped in water bodies","Wetland and floodplain encroachment for real estate","Sand mining from riverbeds","Microplastics from textile fibers and tire wear runoff","Tannery and dye effluent","Unregulated aquaculture with chemical inputs","Dam and barrage flow alteration","Ritual and festival waste disposal in rivers","Non-functional or silted rainwater harvesting structures (SoTH)","Loss of dry-season water availability for wildlife and livestock (SoTH)","Untreated greywater discharge — no soak pits (SoTH)"] },
+  { key:"bio", title:"Biodiversity", items:["Habitat fragmentation from roads and sprawl","Deforestation and land conversion","Invasive species introduction","Poaching and illegal wildlife trade","Pesticide impact on pollinators","Human-wildlife conflict and retaliatory killing","Overfishing and unsustainable harvest","Light and noise pollution","Forest fires from land clearing, shifting cultivation, or honey collection","Encroachment inside forest and protected areas","Unregulated tourism and trampling","Illegal logging and timber extraction","Linear infrastructure fragmenting wildlife corridors","Aquatic ecosystem decline — pond macro-fauna loss, frogs/fish/birds (SoTH)","Loss of sacred groves and protected cultural-ecology sites (SoTH)","Decline in non-timber forest produce (NTFP) availability (SoTH)","Green monoculture plantations masking real species loss (SoTH)"] },
+  { key:"energy", title:"Energy footprint", items:["Grid electricity source mix","Household cooking fuel choice","Building insulation and design","Transportation patterns and fuel type","Industrial energy intensity","Renewable adoption rate","Deforestation for fuelwood","Subsidized power driving overconsumption, e.g. free borewell electricity","Inefficient or outdated appliances","Weak enforcement of building energy codes","Transmission and distribution losses"] },
+  { key:"materials", title:"Materials and waste", items:["Consumption patterns and packaging use","Waste segregation at source","Municipal collection and recycling access","Informal waste-picker recovery rate","Open dumping and burning","Construction and demolition debris","E-waste generation and disposal","Single-use plastic driving microplastic pollution","Informal e-waste recycling with acid leaching","Multi-layered plastic sachets in rural retail","Biomedical waste improper disposal","Weak enforcement of extended producer responsibility"] }
+];
+
+const secondOrder = [
+  { name:"Agricultural commodity chains",
+    impact:{ soil:"primary", air:"none", water:"primary", bio:"secondary", energy:"secondary", materials:"none" },
+    mech:{ soil:"MSP policy and export demand entrench monocropping and heavy fertilizer or pesticide input.",
+      water:"Water-intensive cash crops such as sugarcane and paddy expand into water-stressed regions.",
+      bio:"Farmland expansion converts adjoining scrub and forest edge habitat.",
+      energy:"Groundwater pumping for irrigation adds to local energy demand." } },
+  { name:"Transport and logistics infrastructure",
+    impact:{ soil:"secondary", air:"primary", water:"secondary", bio:"secondary", energy:"primary", materials:"secondary" },
+    mech:{ soil:"Road and rail construction takes land and draws on aggregate quarrying for roadbeds.",
+      air:"Long-haul freight moving grain and vegetables across the country adds continuous vehicle emissions.",
+      water:"Highway runoff carries oil, fuel residue and sediment into nearby drainage and water bodies.",
+      bio:"Highways and rail lines fragment wildlife corridors and increase roadkill.",
+      energy:"Diesel consumption for cross-country freight is a direct and growing energy draw.",
+      materials:"Cold-chain packaging, crates and plastic wrap accumulate at distribution and market hubs." } },
+  { name:"Textile and fashion chains",
+    impact:{ soil:"none", air:"none", water:"primary", bio:"none", energy:"secondary", materials:"primary" },
+    mech:{ water:"Export-oriented dyeing and tanning clusters concentrate effluent loads in river stretches.",
+      energy:"Wet processing and dyeing are energy-intensive steps in textile manufacturing.",
+      materials:"Fast fashion accelerates synthetic fiber production, feeding microplastic fiber shedding." } },
+  { name:"Urban construction material demand",
+    impact:{ soil:"primary", air:"secondary", water:"secondary", bio:"secondary", energy:"none", materials:"none" },
+    mech:{ soil:"Cities source sand, stone and brick from surrounding rural land, often beyond sustainable extraction rates.",
+      air:"Quarrying, crushing and material transport raise particulate dust levels nearby.",
+      water:"Riverbed sand mining alters flow patterns and increases turbidity.",
+      bio:"Quarry and riverbed extraction destroys instream and riparian habitat." } },
+  { name:"Energy and fuel import chains",
+    impact:{ soil:"none", air:"primary", water:"secondary", bio:"none", energy:"primary", materials:"none" },
+    mech:{ air:"Coal-based generation, shaped by national fuel-import dependency, is a major emissions source.",
+      water:"Thermal power plants draw and discharge large volumes of water, affecting local temperature and flow.",
+      energy:"A site's grid mix is set by global energy markets and national import policy, not local choice." } },
+  { name:"E-commerce and consumer goods chains",
+    impact:{ soil:"none", air:"secondary", water:"secondary", bio:"none", energy:"secondary", materials:"primary" },
+    mech:{ air:"Last-mile delivery fleets add localized vehicle emissions.",
+      water:"Packaging waste breaks down into microplastics that enter waterways.",
+      energy:"Fuel use for delivery and warehousing adds incremental demand.",
+      materials:"Packaged goods and delivery culture generate waste faster than local infrastructure can absorb, especially rural retail sachets." } },
+  { name:"Rural credit and debt cycles",
+    impact:{ soil:"primary", air:"none", water:"primary", bio:"secondary", energy:"none", materials:"none" },
+    mech:{ soil:"Input loans push continuous cash cropping to service debt, shortening fallow and rotation periods.",
+      water:"Debt-driven intensification favors high-yield, high-irrigation cropping choices.",
+      bio:"Loan-backed expansion pushes cultivation into marginal or forest-edge land." } },
+  { name:"Tourism economy dependency",
+    impact:{ soil:"secondary", air:"none", water:"primary", bio:"secondary", energy:"secondary", materials:"primary" },
+    mech:{ soil:"Resort and infrastructure construction takes land out of natural or agricultural use.",
+      water:"Seasonal demand spikes strain local water supply beyond sustainable draw.",
+      bio:"Infrastructure expansion and footfall fragment and disturb habitat.",
+      energy:"Hotel and resort operations add concentrated local energy demand.",
+      materials:"Waste generation from visitors routinely exceeds local collection capacity." } },
+  { name:"Migration and labor economy shifts",
+    impact:{ soil:"primary", air:"none", water:"secondary", bio:"primary", energy:"none", materials:"none" },
+    mech:{ soil:"Out-migration leads to land abandonment and the collapse of terracing and bunding maintenance.",
+      water:"Traditional water harvesting structures fall into disrepair without local upkeep.",
+      bio:"Community forest and grazing stewardship practices break down as younger generations migrate for work." } },
+  { name:"Seed and agricultural input dependency (SoTH)",
+    impact:{ soil:"primary", air:"none", water:"none", bio:"secondary", energy:"none", materials:"none" },
+    mech:{ soil:"Commercial seed and input supply chains lock farmers into chemical-dependent cultivation cycles, eroding the organic-to-chemical ratio.",
+      bio:"Loss of village-saved seed reduces on-farm crop landrace and genetic diversity built up over generations." } },
+  { name:"Utility-scale renewable energy land conversion (SoTH)",
+    impact:{ soil:"secondary", air:"none", water:"none", bio:"secondary", energy:"primary", materials:"none" },
+    mech:{ soil:"Ground-mounted solar installations convert grazing and common land, altering land use at scale.",
+      bio:"Utility solar farms fragment grazing commons and habitat even while improving the site's energy score — a genuine trade-off, not a one-directional gain.",
+      energy:"Utility-scale renewables raise the Renewable Adoption Ratio directly, which is why this driver needs to be read alongside its land-use cost rather than as a pure win." } }
+];
+
+const tools = {
+  soil:[
+    {tier:"free",name:"Soil Health Card",desc:"Govt scheme, tests 12 parameters (pH, EC, organic carbon, N/P/K, micronutrients) free every two years via your agriculture extension officer."},
+    {tier:"app",name:"Tea Bag Index app",desc:"Bury and later weigh a tea bag to measure biological decomposition activity — the microbial health NPK misses."},
+    {tier:"diy",name:"Core sampler + kitchen scale",desc:"Dry soil weight over known volume gives bulk density, a simple compaction indicator."},
+    {tier:"diy",name:"Crop Diversification Index (Shannon)",desc:"Record each crop and its area per season; a pre-built spreadsheet formula (already in the scorecard workbook) turns that into a 0–100 diversity score instead of a mono/multi checkbox — so 2 crops at 90/10 and 22 crops evenly spread no longer look the same."},
+    {tier:"diy",name:"Livestock Grazing Pressure Ratio",desc:"Stocking density ÷ recommended carrying capacity, calculated automatically in the workbook from livestock count and grazing area — replaces a subjective overgrazing rating with a real ratio."},
+    {tier:"diy",name:"Organic Cultivation Ratio (SoTH)",desc:"Organic area ÷ total cultivated area, computed automatically in the workbook — sourced from the SoTH Agroecology parameter set."},
+    {tier:"diy",name:"Seed Sourcing / Sovereignty Ratio (SoTH)",desc:"Village-saved seed ÷ total seed sourced, computed automatically in the workbook — tracks dependency on outside commercial seed."}
+  ],
+  air:[
+    {tier:"diy",name:"Lichen bio-indicator grid",desc:"A clear grid overlay on tree bark, counting lichen cover — free and genuinely usable at village scale."},
+    {tier:"kit",name:"Pooled low-cost PM2.5 sensor",desc:"Consumer sensors (₹15,000–30,000) are usable if several sites or panchayats pool the cost; calibration still needs care."},
+    {tier:"free",name:"Community sensor pilots",desc:"Programs like Clean Air Catalyst have trained local stakeholders on low-cost monitoring in Indian pilot cities — worth requesting their protocol."}
+  ],
+  water:[
+    {tier:"kit",name:"State field water test kit",desc:"Purpose-built for panchayat use (e.g. TWAD Board model, ~₹2,500), no lab or heating needed, trainable in a day."},
+    {tier:"kit",name:"Handheld TDS / pH pen",desc:"₹300–800, gives instant dissolved-solids and acidity readings on site."},
+    {tier:"diy",name:"Kick-net sampling + ID chart",desc:"Macroinvertebrate presence indicates pollution sensitivity — needs only a net and a laminated guide."},
+    {tier:"diy",name:"Rainwater Harvesting Infrastructure Audit (SoTH)",desc:"A visual inventory checklist of RWH and recharge structures, marking functional vs silted/non-functional — no equipment needed."}
+  ],
+  bio:[
+    {tier:"app",name:"eBird",desc:"Free app for logging bird sightings, used nationally through birdcount.in — strongest-tooled pillar of the six."},
+    {tier:"app",name:"iNaturalist",desc:"Photo-based ID for any species, verified by a volunteer expert pool."},
+    {tier:"app",name:"SeasonWatch",desc:"Tracks flowering and fruiting of 170+ Indian tree species — good for spotting climate-linked shifts over years."},
+    {tier:"app",name:"India Biodiversity Portal groups",desc:"Species-specific citizen projects (Frogwatch, dragonfly monitoring) with expert-backed identification."},
+    {tier:"diy",name:"Pond Macro-fauna Observation Log (SoTH)",desc:"A simple presence/absence log for frogs, fish and birds at village water bodies, tracked over time to flag mass die-off events."}
+  ],
+  energy:[
+    {tier:"diy",name:"Renewable Adoption Ratio",desc:"Renewable-powered households or capacity ÷ total, computed automatically in the workbook as a 0–100% score instead of a subjective 'adopted renewables: yes/no' rating."},
+    {tier:"diy",name:"Water Boiling Test",desc:"Stopwatch, thermometer and scale measure cookstove fuel efficiency — no app currently fits this well."},
+    {tier:"diy",name:"Utility bill log",desc:"A shared spreadsheet tracking monthly per-household consumption is the most realistic tool here."}
+  ],
+  materials:[
+    {tier:"app",name:"Waste Samaritan",desc:"QR-code based door-to-door segregation tracking built specifically for panchayats and communities, with photo-verified compliance scoring."},
+    {tier:"diy",name:"7-day sort-and-weigh audit",desc:"A spring balance and a week of sorting reveals real composition — no app needed, and already in your scorecard method."}
+  ]
+};
+
+const facilitation = [
+  { name:"Transect walk", tags:["soil","water","bio"],
+    desc:"Walk a fixed route through the site with a mixed group — elders, women, farmers, youth — observing and discussing land, water and vegetation changes as you go. Surfaces what the scorecard's numbers alone can miss on the ground." },
+  { name:"Resource and social mapping", tags:["soil","water","bio","materials"],
+    desc:"The community draws its own map of water sources, forest patches, grazing land and degraded zones on a large sheet or the ground. Reveals spatial patterns no single-point measurement captures." },
+  { name:"Historical timeline", tags:["governance"],
+    desc:"Elders recall major changes decade by decade — when the forest was last cut, when the river changed course, when borewells arrived. Directly surfaces the systemic, second-order drivers behind today's scores." },
+  { name:"Seasonal calendar", tags:["water","energy","soil"],
+    desc:"Maps water scarcity, crop cycles, fodder availability and labor migration across the year. Shows when stress peaks overlap across pillars, which a single assessment date cannot." },
+  { name:"Focus group discussions", tags:["governance"],
+    desc:"Structured conversations held separately with distinct groups — women, herders, landless laborers — since each experiences degradation differently. Adds the qualitative context behind a quantitative score." },
+  { name:"Institutional (Venn) diagram", tags:["governance"],
+    desc:"Community maps which institutions — panchayat, forest department, SHGs, NGOs — influence each resource, and how much they're trusted or accessed. Surfaces the enforcement and governance gaps behind systemic drivers." },
+  { name:"Matrix ranking and scoring", tags:["priority"],
+    desc:"Using stones, seeds or beans, groups rank problems or pillars by severity — accessible in low-literacy settings. Validates or challenges what the technical scorecard says matters most." },
+  { name:"Most Significant Change", tags:["priority"],
+    desc:"Community members share short stories about what changed most significantly for them and why, collected over time. Useful narrative evidence for tracking intervention impact between scoring cycles." },
+  { name:"Photovoice", tags:["priority","bio"],
+    desc:"Community members photograph what \"healthy\" and \"degraded\" look like to them, then discuss the images together. Surfaces local definitions of health that may differ from technical indicators." }
+];
+const FTAG_LABEL = {soil:"Soil",air:"Air",water:"Water",bio:"Biodiversity",energy:"Energy",materials:"Materials",governance:"Governance",priority:"Priority-setting"};
+
+function buildSwatches(){
+  document.getElementById("swatches").innerHTML = PILLARS.map(p => `
+    <div class="swatch"><span class="chip" style="background:${PILLAR_META[p].color}"></span><span>${PILLAR_META[p].label}</span></div>
+  `).join("");
+}
+
+function buildHealthy(){
+  const grid = document.getElementById("healthy-grid");
+  grid.innerHTML = PILLARS.map(key => {
+    const m = PILLAR_META[key];
+    const cats = healthyState[key].map(cat => `
+      <div class="healthy-cat">
+        <p class="healthy-cat-label">${cat.label}</p>
+        <ul>${cat.items.map(i => `<li>${i}</li>`).join("")}</ul>
+      </div>
+    `).join("");
+    return `
+    <div class="healthy-card" style="--pc:${m.color};--pt:${m.tint};">
+      <div class="head"><div class="badge">${m.icon}</div><h3>${m.label}</h3></div>
+      ${cats}
+    </div>`;
+  }).join("");
+}
+
+function buildFirstOrder(){
+  const grid = document.getElementById("pillar-grid");
+  grid.innerHTML = firstOrder.map(p => {
+    const m = PILLAR_META[p.key];
+    return `
+    <div class="pillar-card" style="--pc:${m.color};--pt:${m.tint};">
+      <div class="head"><div class="badge">${m.icon}</div><h3>${p.title}</h3></div>
+      <ul>${p.items.map(i => `<li>${i}</li>`).join("")}</ul>
+    </div>`;
+  }).join("");
+}
+
+function buildSecondOrder(){
+  const body = document.getElementById("matrix-body");
+  body.innerHTML = secondOrder.map((d, idx) => {
+    const dots = PILLARS.map(p => `<div class="dot-cell"><span class="dot ${d.impact[p]} col-${p}"></span></div>`).join("");
+    const mechRows = PILLARS.filter(p => d.impact[p] !== "none" && d.mech[p]).map(p => `
+      <li><span class="pillar-tag tag-${p}">${p}</span><span>${d.mech[p]}</span></li>
+    `).join("");
+    return `
+      <div class="driver" id="driver-${idx}">
+        <div class="driver-summary" onclick="toggleDriver(${idx})">
+          <div class="driver-name"><span class="caret">&#9656;</span>${d.name}</div>
+          ${dots}
+        </div>
+        <div class="driver-detail"><ul>${mechRows}</ul></div>
+      </div>`;
+  }).join("");
+}
+
+function toggleDriver(idx){ document.getElementById("driver-" + idx).classList.toggle("open"); }
+
+const TIER_LABEL = {free:"Free",diy:"DIY",kit:"Kit",app:"App"};
+
+function buildTools(){
+  const grid = document.getElementById("tools-grid");
+  grid.innerHTML = PILLARS.map(key => {
+    const m = PILLAR_META[key];
+    const items = tools[key].map(t => `
+      <div class="tool-item">
+        <span class="tier tier-${t.tier}">${TIER_LABEL[t.tier]}</span>
+        <span class="tool-text"><b>${t.name}</b> — ${t.desc}</span>
+      </div>
+    `).join("");
+    return `
+    <div class="pillar-card" style="--pc:${m.color};--pt:${m.tint};">
+      <div class="head"><div class="badge">${m.icon}</div><h3>${m.label}</h3></div>
+      <div>${items}</div>
+    </div>`;
+  }).join("");
+}
+
+function buildFacilitation(){
+  const grid = document.getElementById("facil-grid");
+  grid.innerHTML = facilitation.map(f => `
+    <div class="facil-card">
+      <h3>${f.name}</h3>
+      <p>${f.desc}</p>
+      <div class="facil-tags">${f.tags.map(t => `<span class="ftag-${t}">${FTAG_LABEL[t]}</span>`).join("")}</div>
+    </div>
+  `).join("");
+}
+
+document.querySelectorAll("nav.tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("nav.tabs button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("section.view").forEach(s => s.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.target).classList.add("active");
+  });
+});
+
+buildSwatches();
+buildHealthy();
+buildFirstOrder();
+buildSecondOrder();
+buildTools();
+buildFacilitation();
+</script>
+</body>
+</html>
